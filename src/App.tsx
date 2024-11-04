@@ -1,8 +1,7 @@
 import { useEffect, useReducer } from 'react';
+
 import Header from './components/Header';
 import Main from './components/Main';
-import { IQuizState } from './interfaces/states.interface';
-import { EAppStatus } from './enums/status.enum';
 import Loader from './components/Loader';
 import ErrorView from './components/ErrorView';
 import StartScreen from './components/StartScreen';
@@ -10,19 +9,15 @@ import { statusAppReducer } from './reducers/status-app.reducer';
 import Question from './components/Question';
 import NextButton from './components/NextButton';
 import Progress from './components/Progress';
-
-const initialState: IQuizState = {
-  questions: [],
-  status: EAppStatus.loading,
-  index: 0,
-  answer: null,
-  points: 0,
-};
+import FinishedScreen from './components/FinishedScreen';
+import Timer from './components/Timer';
+import Footer from './components/Footer';
+import { INITIAL_STATE } from './constants/reducers.constant';
 
 function App() {
-  const [state, dispatch] = useReducer(statusAppReducer, initialState);
+  const [state, dispatch] = useReducer(statusAppReducer, INITIAL_STATE);
 
-  const { questions, status, index, answer, points } = state;
+  const { questions, status, index, answer, points, highscore, allottedTime } = state;
   const numQuestions = questions?.length;
   const maxPossiblePoints = questions.reduce((acc, cur) => acc + cur.points, 0);
 
@@ -74,11 +69,29 @@ function App() {
             />
           </>
         )}
-        <NextButton
+        {status === 4 &&
+        <FinishedScreen
+          points={points}
+          maxPossiblePoints={maxPossiblePoints}
+          highscore={highscore}
           dispatch={dispatch}
-          answer={answer}
         />
+        }
       </Main>
+      {status === 3 && questions &&
+      <Footer>
+        <Timer
+          dispatch={dispatch}
+          allottedTime={allottedTime}
+        />
+        <NextButton
+          answer={answer}
+          index={index}
+          numQuestions={numQuestions}
+          dispatch={dispatch}
+        />
+      </Footer>
+      }
     </div>
   );
 }

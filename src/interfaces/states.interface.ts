@@ -2,9 +2,11 @@ import { EAppStatus } from '../enums/status.enum';
 import { IQuestions } from './questions.interface';
 
 export interface IQuizState {
-  questions: IQuestions[] | []
-  status: EAppStatus
-  index: number
+  allottedTime: number
   answer: number | null
+  index: number
   points: number
+  questions: IQuestions[] | []
+  highscore: number
+  status: EAppStatus
 }
